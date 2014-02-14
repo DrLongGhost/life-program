@@ -19,8 +19,20 @@ describe('Life class', function() {
               { x: 3, y: 3 },
               { x: 3, y: 2 }
           ]});
-          expect(life.getCurrentOn()[0].x).toBe(3);
+          expect(life.getCurrentOn()['x3'].length).toBe(3);
         });
+    });
+
+    describe('groupByX function', function() {
+        it('should be defined', function() {
+            expect(typeof life.groupByX).toBe('function');
+        });
+
+        it('should group by X', function() {
+            var results = life.groupByX([{ x: 3, y: 4 }]);
+            expect(results.x3).toContain(4);
+        });
+
     });
 
 });
