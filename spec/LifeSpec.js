@@ -83,4 +83,46 @@ describe('Life class', function() {
         });
     });
 
+    describe('isOn', function() {
+        beforeEach(function() {
+            life.init(defaultInitArgs);
+        });
+
+        it('should be defined', function() {
+            expect(typeof life.isOn).toBe('function');
+        });
+
+        it('should return true for enabled points', function() {
+            expect(life.isOn({x:3,y:4})).toBe(true);
+        });
+
+        it('should return false for disabled points', function() {
+            expect(life.isOn({x:1,y:1})).toBe(false);
+        });
+
+    });
+
+    describe('doTurn', function() {
+        beforeEach(function() {
+            life.init(defaultInitArgs);
+        });
+
+        it('should be defined', function() {
+            expect(typeof life.doTurn).toBe('function');
+        });
+
+        it('should update currentOn', function() {
+            life.doTurn();
+            expect(life.getCurrentOn()['x3'].length).toBe(1);
+            expect(life.getCurrentOn()['x2'][0]).toBe(3);
+            expect(life.getCurrentOn()['x3'][0]).toBe(3);
+            expect(life.getCurrentOn()['x4'][0]).toBe(3);
+        });
+
+        it('should update priorOn', function() {
+            life.doTurn();
+            expect(life.getPriorOn()['x3'].length).toBe(3);
+        });
+    });
+
 });

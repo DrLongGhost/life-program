@@ -8,7 +8,7 @@ var life = (function life() {
      */
     var maxX = 10,
         maxY = 10,
-        currentOn = {};
+        currentOn = priorOn = {};
 
     return {
         getBoard: function() {
@@ -17,6 +17,10 @@ var life = (function life() {
 
         getCurrentOn: function() {
             return currentOn;
+        },
+
+        getPriorOn: function() {
+            return priorOn;
         },
 
         /**
@@ -46,6 +50,31 @@ var life = (function life() {
         },
 
         /**
+         * Parent function that calls other helper functions to recalculate
+         * currentOn for a single "turn"
+         */
+        doTurn: function() {
+            var _this = this,
+                plots = this.findPlotsToCount(),
+                newCurrentOn = [],
+                count,
+                processed = {};
+
+            _.each(plots, function(plot) {
+                if (processed[plot.x+'x'+plot.y]) return true;
+
+                count = _this.countAdjacentOn(plot);
+                if ( (count === 2 && _this.isOn(plot)) || count === 3) {
+                    newCurrentOn.push(plot);
+                }
+                processed[plot.x+'x'+plot.y] = true; // skip duplicates
+            });
+
+            priorOn = currentOn;
+            currentOn = this.groupByX(newCurrentOn);
+        },
+
+        /**
          * Looks at the contents of currentOn to determine a list of plot
          * points which need to be checked within a turn
          * TODO: Future optimization would involve preventing duplicates
@@ -58,7 +87,7 @@ var life = (function life() {
                 xAxis;
 
             _.each(currentOn, function(yAxes, key) {
-                xAxis = key.substr(1);
+                xAxis = parseInt(key.substr(1));
                 _.each(yAxes, function(yAxis) {
                     // Mucho copy-pasteo
                     plots.push({x: xAxis-1, y: yAxis-1});
@@ -112,6 +141,18 @@ var life = (function life() {
             if (args.board && args.board.x) maxX = args.board.x;
             if (args.board && args.board.y) maxY = args.board.y;
             if (args.on && args.on) currentOn = this.groupByX(args.on);
+        },
+
+        /**
+         * Determines whether or not a point is on by comparing it against
+         * currentOn
+         * @param {Object} plot point in the format {x: 3, y: 4}
+         * @return {Boolean}
+         */
+        isOn: function(point) {
+            return (currentOn['x'+point.x] &&
+                    currentOn['x'+point.x].indexOf(point.y)!==-1) ?
+                   true: false;
         }
     };
 
