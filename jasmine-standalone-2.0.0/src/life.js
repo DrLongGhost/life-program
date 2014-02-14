@@ -20,6 +20,32 @@ var life = (function life() {
         },
 
         /**
+         * Counts the number of adjacent cells that are enabled,
+         * comparing the passed plot points against currentOn.
+         * @arg {Object} plotObj Defined as follows: {x:2, y:44}
+         * @return Integer
+         */
+        countAdjacentOn: function(plotObj) {
+            var count = 0,
+                Xs = [ plotObj.x - 1, plotObj.x, plotObj.x + 1 ],
+                Ys = [ plotObj.y - 1, plotObj.y, plotObj.y + 1 ];
+
+            _.each(Xs, function(xAxis) {
+                if (currentOn['x'+xAxis]) {
+                    if (_.indexOf(currentOn['x'+xAxis], Ys[0])!==-1) count++;
+                    if ( xAxis !== Xs[1] &&
+                        _.indexOf(currentOn['x'+xAxis], Ys[1])!==-1
+                        ) {
+                            count++;
+                        }
+                    if (_.indexOf(currentOn['x'+xAxis], Ys[2])!==-1) count++;
+                }
+            });
+
+            return count;
+        },
+
+        /**
          * Converts an array of individual plots into an object indexed
          * by X-Axis. This is done for optimization purposes
          * TODO: Future optimization would keep inner arrays sorted to
