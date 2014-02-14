@@ -46,6 +46,37 @@ var life = (function life() {
         },
 
         /**
+         * Looks at the contents of currentOn to determine a list of plot
+         * points which need to be checked within a turn
+         * TODO: Future optimization would involve preventing duplicates
+         * TODO: Dont push in points that are off the grid
+         * @return Array Array of objects containing X and Y plots for which
+         * countAdjacentOn() should be called
+         */
+        findPlotsToCount: function() {
+            var plots = [],
+                xAxis;
+
+            _.each(currentOn, function(yAxes, key) {
+                xAxis = key.substr(1);
+                _.each(yAxes, function(yAxis) {
+                    // Mucho copy-pasteo
+                    plots.push({x: xAxis-1, y: yAxis-1});
+                    plots.push({x: xAxis, y: yAxis-1});
+                    plots.push({x: xAxis+1, y: yAxis-1});
+                    plots.push({x: xAxis-1, y: yAxis});
+                    plots.push({x: xAxis, y: yAxis});
+                    plots.push({x: xAxis+1, y: yAxis});
+                    plots.push({x: xAxis-1, y: yAxis+1});
+                    plots.push({x: xAxis, y: yAxis+1});
+                    plots.push({x: xAxis+1, y: yAxis+1});
+                });
+            });
+
+            return plots;
+        },
+
+        /**
          * Converts an array of individual plots into an object indexed
          * by X-Axis. This is done for optimization purposes
          * TODO: Future optimization would keep inner arrays sorted to

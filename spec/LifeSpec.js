@@ -66,7 +66,21 @@ describe('Life class', function() {
             var point = { x: 3, y: 5};
             expect(life.countAdjacentOn(point, true)).toBe(1);
         });
+    });
 
+    describe('findPlotsToCount', function() {
+        beforeEach(function() {
+            life.init(defaultInitArgs);
+        });
+
+        it('should be defined', function() {
+            expect(typeof life.findPlotsToCount).toBe('function');
+        });
+
+        it('should return correct list of plots', function() {
+            var list = life.findPlotsToCount();
+            expect(list.length).toBe(27);
+        });
     });
 
 });
