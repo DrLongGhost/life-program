@@ -27,30 +27,23 @@ var lifedom = (function lifedom(life) {
 
              form  = '<div id="life-form">';
 
-             form += '<label for="rowCount">Number of Rows:</label>';
+             form += '<label for="rowCount">Number of Rows: </label>';
              form += '<input type="number" id="rowCount" value="5">';
 
-             form += '<label for="colCount">Number of Columns:</label>';
+             form += '<label for="colCount">Number of Columns: </label>';
              form += '<input type="number" id="colCount" value="5">';
-             form += '</label>';
 
-             form += '<label for="applySettings">';
-             form += '<input type="button" id="applySettings" value="Resize Table">';
-             form += '</label>';
+             form += ' <input type="button" id="applySettings" value="Resize Table">';
 
              form += '<br/><hr><br/>';
 
-             form += '<label for="turnCount">Number of Turns:</label>';
-             form += '<input type="text" id="turnCount" value="10">';
-             form += '</label>';
+             form += '<label for="turnCount">Number of Turns: </label>';
+             form += '<input type="text" id="turnCount" value="100">';
 
-             form += '<label for="turnCount">Speed (in ms):</label>';
+             form += '<label for="turnCount">Speed (lower to speed up): </label>';
              form += '<input type="range" id="speed" min="1" max="1000" value="250">';
-             form += '</label>';
 
-             form += '<label for="play">';
-             form += '<input type="button" id="play" value="Play">';
-             form += '</label>';
+             form += '&nbsp;&nbsp;<input type="button" id="play" value="Play">';
 
              form += '</div>';
 
@@ -137,7 +130,7 @@ var lifedom = (function lifedom(life) {
                 }, speed);
             } else {
                 $play.val('Play');
-                $turns.val(10);
+                $turns.val(100);
             }
         },
 
