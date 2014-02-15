@@ -68,9 +68,6 @@ var lifedom = (function lifedom(life) {
             $table.on('click', 'td', function() {
                 $(this).toggleClass('on off');
             });
-
-            life.init({board: {x: parseInt(colCount), y: parseInt(rowCount) },
-                          on: [] });
         },
 
         /**
@@ -84,7 +81,38 @@ var lifedom = (function lifedom(life) {
          * Overwrites life's internal state with that stored in the Dom table
          */
         syncDomToLife: function() {
+            var colCount = $form.find('#colCount').val() || 5,
+                rowCount = $form.find('#rowCount').val() || 5,
+                enabledCells = [],
+                plots;
 
+            $table.find('td.on').each(function(index, el){
+                plots = $(el).attr('id').split('x');
+                enabledCells.push({ x: parseInt(plots[0]), y: parseInt(plots[1]) });
+            });
+
+            life.init({board: {x: parseInt(colCount), y: parseInt(rowCount) },
+                          on: enabledCells });
+        },
+
+        /**
+         * Updates the table to reflect the current data in the life class
+         * TODO: Optimize this function by not disabling cells which will be
+         * turned back on
+         */
+        syncLifeToDom: function() {
+            var currentOn = life.getCurrentOn();
+
+            // Turn everything off
+            $table.find('td.on').toggleClass('on off');
+
+            // Turn enabled cells on
+            _.each(currentOn, function(yAxes, key) {
+                xAxis = parseInt(key.substr(1));
+                _.each(yAxes, function(yAxis) {
+                    $table.find('#'+xAxis+'x'+yAxis).toggleClass('on off');
+                });
+            });
         }
     };
 })(life);
