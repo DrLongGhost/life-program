@@ -12,7 +12,9 @@ var lifedom = (function lifedom(life) {
          * Updates internal/external state to match the settings in the form
          */
         applySettings: function() {
-
+            // zero out the model
+            $table.html();
+            this.buildTable($table, true);
         },
 
         /**
@@ -20,19 +22,34 @@ var lifedom = (function lifedom(life) {
          * to the new form.
          */
         buildForm: function(node) {
-            var form;
+            var form,
+                _this = this;
 
              form  = '<div id="life-form">';
 
              form += '<label for="rowCount">Number of Rows:</label>';
-             form += '<input type="text" id="rowCount" value="5">';
+             form += '<input type="number" id="rowCount" value="5">';
 
              form += '<label for="colCount">Number of Columns:</label>';
-             form += '<input type="text" id="colCount" value="5">';
+             form += '<input type="number" id="colCount" value="5">';
              form += '</label>';
 
              form += '<label for="applySettings">';
-             form += '<input type="button" id="applySettings" value="Apply Settings">';
+             form += '<input type="button" id="applySettings" value="Resize Table">';
+             form += '</label>';
+
+             form += '<br/><hr><br/>';
+
+             form += '<label for="turnCount">Number of Turns:</label>';
+             form += '<input type="text" id="turnCount" value="10">';
+             form += '</label>';
+
+             form += '<label for="turnCount">Speed (in ms):</label>';
+             form += '<input type="range" id="speed" min="1" max="1000" value="250">';
+             form += '</label>';
+
+             form += '<label for="play">';
+             form += '<input type="button" id="play" value="Play">';
              form += '</label>';
 
              form += '</div>';
@@ -40,20 +57,25 @@ var lifedom = (function lifedom(life) {
              $form = $(node).html(form);
 
              // Register events
-             $form.on('click', '#applySettings', this.applySettings);
+             $form.on('click', '#applySettings', function() {
+                 _this.applySettings();
+             });
+             $form.on('click', '#play', function() {
+                 _this.play();
+             });
         },
 
         /**
          * Creates a table/life object based on the parameters contained in
          * the #life-form form fields
          */
-        buildTable: function(node) {
+        buildTable: function(node, suppressEvents) {
             var table,
                 colCount = $form.find('#colCount').val() || 5,
                 rowCount = $form.find('#rowCount').val() || 5,
                 x, y;
 
-            table = '<table id="life-table">';
+            table = '<table id="life-table" cellspacing="0" cellpadding="0">';
 
             for (y=rowCount; y>0; y--) {
                 table += '<tr>';
@@ -65,16 +87,58 @@ var lifedom = (function lifedom(life) {
             table += '</table>';
 
             $table = $(node).html(table);
-            $table.on('click', 'td', function() {
-                $(this).toggleClass('on off');
-            });
+
+            if (!suppressEvents) {
+                $table.on('click', 'td', function() {
+                    $(this).toggleClass('on off');
+                });
+            }
         },
 
         /**
          * Main init wrapper
+         * @param {DOM Node} Parent for form
+         * @param {DOM Node} Parent for table
          */
-        init: function() {
+        init: function(formParent, tableParent) {
+            this.buildForm($(formParent));
+            this.buildTable($(tableParent));
+        },
 
+        /**
+         * Starts the action
+         */
+        play: function(subsequentCall) {
+            var $turns = $form.find('#turnCount'),
+                turnsRemaining = parseInt($turns.val()),
+                _this = this,
+                $play = $form.find('#play'),
+                playVal,
+                speed = $form.find('#speed').val();
+
+            if (!subsequentCall) {
+                playVal = ($play.val() === 'Play') ? 'Stop' : 'Play';
+                $play.val(playVal);
+
+                if (playVal === 'Play') {
+                    window.clearTimeout(this.playing);
+                    return true;
+                }
+            }
+
+            this.syncDomToLife();
+
+            if (turnsRemaining) {
+                this.playing = window.setTimeout(function() {
+                    life.doTurn();
+                    _this.syncLifeToDom();
+                    $turns.val(--turnsRemaining);
+                    _this.play(true);
+                }, speed);
+            } else {
+                $play.val('Play');
+                $turns.val(10);
+            }
         },
 
         /**

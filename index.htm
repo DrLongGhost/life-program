@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Conway's Life</title>
+  <style type="text/css">
+  	  body, h1, h2, h3 {font-family: Arial, Helvetica, sans-serif; }
+
+  	  table {border: 1px solid black;}
+  	  table td {border: 1px solid black; height: 40px; width: 40px; cursor: pointer;}
+  	  table td.on {background-color: #333;}
+  	  table td.on {background-color: #00CC00;}
+
+  	  #formParent { margin-top: 20px; }
+  	  #formParent input[type="number"],
+  	  #formParent input[type="text"] { width: 60px; margin-right: 12px; }
+  </style>
+<body>
+	<h1>Conway's Life</h1>
+
+	<div id="tableParent"></div>
+	<small>(Click the board to select cells)</small>
+	<div id="formParent"></div>
+    <br/><hr>
+
+    <h3>Presets (Per <a tagret="_blank" href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">wikipedia</a>)</h3>
+    <ul>
+    	<li><a href="javascript:" class="preset">Blinker</a></li>
+    	<li><a href="javascript:" class="preset">Glider</a></li>
+    	<li><a href="javascript:" class="preset">R-Pentomino</a></li>
+    	<li><a href="javascript:" class="preset">Line Pattern</a></li>
+    	<li><a href="javascript:" class="preset">Beehive</a></li>
+	</ul>
+
+    <hr>
+
+	<h3>Jasmine-based Unit Tests</h3>
+	<a target="_blank" href="./SpecRunner.html">Run Tests</a>
+</body>
+
+<script type="text/javascript" src="src/underscore-min.js"></script>
+<script type="text/javascript" src="src/jquery.min.js"></script>
+<script type="text/javascript" src="src/life.js"></script>
+<script type="text/javascript" src="src/lifedom.js"></script>
+<script type="text/javascript" src="src/index.js"></script>
+
+</head>
+</html>
