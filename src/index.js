@@ -11,33 +11,38 @@ $(function() {
                 $cols.val(5);
                 $('#applySettings').click();
                 $('#3x2, #3x3, #3x4').click();
+                $('#large').click();
                 break;
             case 'Beehive':
                 $rows.val(10);
                 $cols.val(10);
                 $('#applySettings').click();
                 $('#3x4, #4x4, #2x3, #5x3, #3x2, #4x2').click();
+                $('#large').click();
                 break;
             case 'Glider':
                 $rows.val(50);
                 $cols.val(50);
                 $('#applySettings').click();
-                $('#turnCount').val(100);
+                $('#turnCount').val(300);
                 $('#4x49, #4x48, #4x47, #3x47, #2x48').click();
+                $('#small').click();
                 break;
             case 'R-Pentomino':
-                $rows.val(50);
-                $cols.val(50);
+                $rows.val(100);
+                $cols.val(100);
                 $('#applySettings').click();
-                $('#turnCount').val(100);
-                $('#29x24, #29x23, #29x22, #30x22, #28x23').click();
+                $('#turnCount').val(600);
+                $('#49x24, #49x23, #49x22, #50x22, #48x23').click();
+                $('#small').click();
                 break;
             case 'Line Pattern':
-                $rows.val(50);
-                $cols.val(50);
+                $rows.val(100);
+                $cols.val(100);
                 $('#applySettings').click();
-                $('#turnCount').val(100);
-                $('#2x25, #3x25, #4x25, #5x25, #6x25, #7x25, #8x25, #9x25, #11x25, #12x25, #13x25, #14x25, #15x25, #19x25, #20x25, #21x25, #28x25, #29x25, #30x25, #31x25, #32x25, #33x25, #34x25, #36x25, #37x25, #38x25, #39x25, #40x25').click();
+                $('#turnCount').val(600);
+                $('#32x25, #33x25, #34x25, #35x25, #36x25, #37x25, #38x25, #39x25, #41x25, #42x25, #43x25, #44x25, #45x25, #49x25, #50x25, #51x25, #58x25, #59x25, #60x25, #61x25, #62x25, #63x25, #64x25, #66x25, #67x25, #68x25, #69x25, #70x25').click();
+                $('#small').click();
                 break;
         }
     });

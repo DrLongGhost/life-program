@@ -7,7 +7,10 @@
   	  body, h1, h2, h3 {font-family: Arial, Helvetica, sans-serif; }
 
   	  table {border: 1px solid black;}
-  	  table td {border: 1px solid black; height: 40px; width: 40px; cursor: pointer;}
+  	  table.small td {height: 10px; width: 10px; }
+  	  table.medium td {height: 20px; width: 20px; }
+  	  table.large td {height: 40px; width: 40px; }
+  	  table td {border: 1px solid black; cursor: pointer;}
   	  table td.on {background-color: #333;}
   	  table td.on {background-color: #00CC00;}
 
@@ -56,16 +59,16 @@
 	<h1>Conway's Life</h1>
 
 	<div id="tableParent"></div>
-	<small>(Click the board to select cells)</small>
+	<small>Click a preset then click play.<br/>You can also click the board to select cells.</small>
 	<div id="formParent"></div>
     <br/><hr>
 
     <h3>Presets (Per <a tagret="_blank" href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">wikipedia</a>)</h3>
     <ul>
-    	<li><a href="javascript:" class="preset">Blinker</a></li>
-    	<li><a href="javascript:" class="preset">Glider</a></li>
     	<li><a href="javascript:" class="preset">R-Pentomino</a></li>
     	<li><a href="javascript:" class="preset">Line Pattern</a></li>
+    	<li><a href="javascript:" class="preset">Blinker</a></li>
+    	<li><a href="javascript:" class="preset">Glider</a></li>
     	<li><a href="javascript:" class="preset">Beehive</a></li>
 	</ul>
 

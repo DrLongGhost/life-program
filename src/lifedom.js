@@ -35,13 +35,22 @@ var lifedom = (function lifedom(life) {
 
              form += ' <input type="button" id="applySettings" value="Resize Table">';
 
+             form += '<br/><input type="radio" name="size" id="small" value="small">';
+             form += '<label for="size1">Small Cells</label>&nbsp;&nbsp;&nbsp;&nbsp;';
+
+             form += '<input type="radio" name="size" id="medium" value="medium" checked>';
+             form += '<label for="size2">Medium Cells</label>&nbsp;&nbsp;&nbsp;&nbsp;';
+
+             form += '<input type="radio" name="size" id="large" value="large">';
+             form += '<label for="size3">Large Cells</label>';
+
              form += '<br/><hr><br/>';
 
              form += '<label for="turnCount">Number of Turns: </label>';
              form += '<input type="text" id="turnCount" value="100">';
 
              form += '<label for="turnCount">Speed (lower to speed up): </label>';
-             form += '<input type="range" id="speed" min="1" max="1000" value="250">';
+             form += '<input type="range" id="speed" min="1" max="1000" value="50">';
 
              form += '&nbsp;&nbsp;<input type="button" id="play" value="Play">';
 
@@ -56,6 +65,9 @@ var lifedom = (function lifedom(life) {
              $form.on('click', '#play', function() {
                  _this.play();
              });
+             $form.on('click', '#small, #medium, #large', function(radio) {
+                 $table.find('table').get(0).className = $(this).val();
+             });
         },
 
         /**
@@ -68,7 +80,7 @@ var lifedom = (function lifedom(life) {
                 rowCount = $form.find('#rowCount').val() || 5,
                 x, y;
 
-            table = '<table id="life-table" cellspacing="0" cellpadding="0">';
+            table = '<table class="medium" id="life-table" cellspacing="0" cellpadding="0">';
 
             for (y=rowCount; y>0; y--) {
                 table += '<tr>';
