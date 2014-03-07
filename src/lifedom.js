@@ -6,7 +6,9 @@ var lifedom = (function lifedom(life) {
     var $table,
         $form,
         $turnCount,
-        turnCount = 1;
+        turnCount = 1,
+        $tps,
+        priorTurn = 1;
 
     return {
 
@@ -56,10 +58,18 @@ var lifedom = (function lifedom(life) {
 
              form += '&nbsp;&nbsp;<input type="button" id="play" value="Play">';
 
+             form += '<br/><hr><br/>';
+
+             form += '<label for="tps">Performance: </label>';
+             form += '<strong id="tps">0</strong> turns per second';
+
              form += '</div>';
 
              $form = $(node).html(form);
+
+             // Cache form elements
              $turnCount = $('#turnCount');
+             $tps = $('#tps');
 
              // Register events
              $form.on('click', '#applySettings', function() {
@@ -72,6 +82,14 @@ var lifedom = (function lifedom(life) {
                  $table.find('table').get(0).className = $(this).val();
              });
              $form.on('click', '#turnCount', this.resetTurnCount);
+
+             // Monitor tps
+             window.setInterval(function() {
+                 var tps = turnCount - priorTurn;
+                 if (tps < 0) tps = 0;
+                 priorTurn = turnCount;
+                 $tps.html(tps);
+             }, 1000);
         },
 
         /**
