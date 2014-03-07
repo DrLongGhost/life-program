@@ -4,7 +4,9 @@
  */
 var lifedom = (function lifedom(life) {
     var $table,
-        $form;
+        $form,
+        $turnCount,
+        turnCount = 1;
 
     return {
 
@@ -46,10 +48,10 @@ var lifedom = (function lifedom(life) {
 
              form += '<br/><hr><br/>';
 
-             form += '<label for="turnCount">Number of Turns: </label>';
-             form += '<input type="text" id="turnCount" value="100">';
+             form += '<label for="turnCount">Turn: </label>';
+             form += '<strong id="turnCount">1</strong>';
 
-             form += '<label for="turnCount">Speed (lower to speed up): </label>';
+             form += '<label for="speed">Speed (lower to speed up): </label>';
              form += '<input type="range" id="speed" min="1" max="1000" value="50">';
 
              form += '&nbsp;&nbsp;<input type="button" id="play" value="Play">';
@@ -57,6 +59,7 @@ var lifedom = (function lifedom(life) {
              form += '</div>';
 
              $form = $(node).html(form);
+             $turnCount = $('#turnCount');
 
              // Register events
              $form.on('click', '#applySettings', function() {
@@ -68,6 +71,7 @@ var lifedom = (function lifedom(life) {
              $form.on('click', '#small, #medium, #large', function(radio) {
                  $table.find('table').get(0).className = $(this).val();
              });
+             $form.on('click', '#turnCount', this.resetTurnCount);
         },
 
         /**
@@ -115,7 +119,6 @@ var lifedom = (function lifedom(life) {
          */
         play: function(subsequentCall) {
             var $turns = $form.find('#turnCount'),
-                turnsRemaining = parseInt($turns.val()),
                 _this = this,
                 $play = $form.find('#play'),
                 playVal,
@@ -133,17 +136,23 @@ var lifedom = (function lifedom(life) {
 
             this.syncDomToLife();
 
-            if (turnsRemaining) {
-                this.playing = window.setTimeout(function() {
-                    life.doTurn();
-                    _this.syncLifeToDom();
-                    $turns.val(--turnsRemaining);
-                    _this.play(true);
-                }, speed);
-            } else {
-                $play.val('Play');
-                $turns.val(100);
-            }
+            this.playing = window.setTimeout(function() {
+                life.doTurn();
+                _this.syncLifeToDom();
+                _this.play(true);
+
+                // Post turn actions
+                $turnCount.html(++turnCount);
+
+            }, speed);
+        },
+
+        /**
+         * Resets the turn counter back to 1
+         */
+        resetTurnCount: function() {
+            turnCount = 1;
+            $turnCount.html(1);
         },
 
         /**

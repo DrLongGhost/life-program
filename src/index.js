@@ -5,20 +5,22 @@ $(function() {
         $rows = $('#rowCount');
         $cols = $('#colCount');
 
+        lifedom.resetTurnCount();
+
         switch ($(this).html()) {
             case 'Blinker':
                 $rows.val(5);
                 $cols.val(5);
                 $('#applySettings').click();
                 $('#3x2, #3x3, #3x4').click();
-                $('#large').click();
+                $('#medium').click();
                 break;
             case 'Beehive':
                 $rows.val(10);
                 $cols.val(10);
                 $('#applySettings').click();
                 $('#3x4, #4x4, #2x3, #5x3, #3x2, #4x2').click();
-                $('#large').click();
+                $('#medium').click();
                 break;
             case 'Glider':
                 $rows.val(50);
@@ -46,4 +48,6 @@ $(function() {
                 break;
         }
     });
+
+    $('.preset3').click();
 });
