@@ -47,7 +47,7 @@ describe('Lifedom class', function() {
 
         it('should bind toggleCellClass to the table cells', function() {
             $div2.find('#2x2').click();
-            expect($div2.find('#2x2').hasClass('on')).toBe(true);
+            expect($div2.find('#2x2').css('backgroundColor')).toBe('rgb(0, 204, 0)');
         });
     });
 
@@ -96,9 +96,9 @@ describe('Lifedom class', function() {
 
             life.init({board: {x: 5, y: 5 },
                           on: [
-                              {x: 2, y: 3},
+                              {x: 3, y: 4},
                               {x: 3, y: 3},
-                              {x: 4, y: 3}
+                              {x: 3, y: 2}
                           ] });
             lifedom.syncLifeToDom();
         });
@@ -108,11 +108,11 @@ describe('Lifedom class', function() {
         });
 
         it('should set the correct classes', function() {
-            expect($div2.find('#3x4').hasClass('on')).toBe(false);
-            expect($div2.find('#2x3').hasClass('on')).toBe(true);
-            expect($div2.find('#3x3').hasClass('on')).toBe(true);
-            expect($div2.find('#4x3').hasClass('on')).toBe(true);
-            expect($div2.find('#3x2').hasClass('on')).toBe(false);
+            expect($div2.find('#3x4').css('backgroundColor')).toBe('rgb(0, 204, 0)');
+            expect($div2.find('#2x3').css('backgroundColor')).toBe('');
+            expect($div2.find('#3x3').css('backgroundColor')).toBe('rgb(0, 204, 0)');
+            expect($div2.find('#4x3').css('backgroundColor')).toBe('');
+            expect($div2.find('#3x2').css('backgroundColor')).toBe('rgb(0, 204, 0)');
         });
     });
 
