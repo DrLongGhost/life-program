@@ -5,10 +5,16 @@
 var lifedom = (function lifedom(life) {
     var $table,
         $form,
+
+        // Track turns & performance
         $turnCount,
         turnCount = 1,
         $tps,
-        priorTurn = 1;
+        priorTurn = 1,
+
+        // Array of IDs of enabled cells
+        enabledCells = [],
+        ENABLED_COLOR = '#00CC00';
 
     return {
 
@@ -18,6 +24,7 @@ var lifedom = (function lifedom(life) {
         applySettings: function() {
             // zero out the model
             $table.html();
+            enabledCells = [];
             this.buildTable($table, true);
         },
 
@@ -107,7 +114,7 @@ var lifedom = (function lifedom(life) {
             for (y=rowCount; y>0; y--) {
                 table += '<tr>';
                 for (x=1; x<=colCount; x++) {
-                    table += '<td id="' + x + 'x' + y + '" class="off"></td>';
+                    table += '<td id="' + x + 'x' + y + '"></td>';
                 }
                 table += '</tr>';
             }
@@ -117,7 +124,13 @@ var lifedom = (function lifedom(life) {
 
             if (!suppressEvents) {
                 $table.on('click', 'td', function() {
-                    $(this).toggleClass('on off');
+                    if (this.style.backgroundColor) {
+                        this.style.backgroundColor = '';
+                        enabledCells.splice(enabledCells.indexOf(this.id), 1);
+                    } else {
+                        this.style.backgroundColor = ENABLED_COLOR;
+                        enabledCells.push(this.id);
+                    }
                 });
             }
         },
@@ -182,16 +195,16 @@ var lifedom = (function lifedom(life) {
         syncDomToLife: function() {
             var colCount = $form.find('#colCount').val() || 5,
                 rowCount = $form.find('#rowCount').val() || 5,
-                enabledCells = [],
+                enabledCellsForInit = [],
                 plots;
 
-            $table.find('td.on').each(function(index, el){
-                plots = $(el).attr('id').split('x');
-                enabledCells.push({ x: parseInt(plots[0]), y: parseInt(plots[1]) });
-            });
+            for (var i=enabledCells.length-1; i>-1; i--) {
+                plots = enabledCells[i].split('x');
+                enabledCellsForInit.push({ x: parseInt(plots[0]), y: parseInt(plots[1]) });
+            }
 
             life.init({board: {x: parseInt(colCount), y: parseInt(rowCount) },
-                          on: enabledCells });
+                          on: enabledCellsForInit });
         },
 
         /**
@@ -200,16 +213,22 @@ var lifedom = (function lifedom(life) {
          * turned back on
          */
         syncLifeToDom: function() {
-            var currentOn = life.getCurrentOn();
+            var currentOn = life.getCurrentOn(), d;
 
             // Turn everything off
-            $table.find('td.on').toggleClass('on off');
+            for (var i=enabledCells.length-1;i>-1;i--) {
+                d = document.getElementById(enabledCells[i]);
+                if (d) d.style.backgroundColor = '';
+            }
+            enabledCells = [];
 
             // Turn enabled cells on
             _.each(currentOn, function(yAxes, key) {
                 xAxis = parseInt(key.substr(1));
                 _.each(yAxes, function(yAxis) {
-                    $table.find('#'+xAxis+'x'+yAxis).toggleClass('on off');
+                    d = document.getElementById(xAxis+'x'+yAxis);
+                    if (d) { d.style.backgroundColor = ENABLED_COLOR; }
+                    enabledCells.push(xAxis+'x'+yAxis);
                 });
             });
         }
