@@ -49,5 +49,5 @@ $(function() {
         }
     });
 
-    $('.preset3').click();
+    $('.preset1').click();
 });

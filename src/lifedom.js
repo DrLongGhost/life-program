@@ -161,6 +161,9 @@ var lifedom = (function lifedom(life) {
 
                 // Post turn actions
                 $turnCount.html(++turnCount);
+                if (turnCount==150) {
+                    alert($tps.html() + 'tps at turn 150');
+                }
 
             }, speed);
         },
