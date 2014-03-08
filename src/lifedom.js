@@ -14,7 +14,10 @@ var lifedom = (function lifedom(life) {
 
         // Array of IDs of enabled cells
         enabledCells = [],
-        ENABLED_COLOR = '#00CC00';
+        ENABLED_COLOR = '#00CC00',
+
+        // Cache dom nodes
+        nodes = {};
 
     return {
 
@@ -136,6 +139,16 @@ var lifedom = (function lifedom(life) {
         },
 
         /**
+         * Provides a cache around getElementById
+         */
+        getNode: function(id) {
+            if (nodes[id]) return nodes[id];
+
+            nodes[id] = document.getElementById(id);
+            return nodes[id];
+        },
+
+        /**
          * Main init wrapper
          * @param {DOM Node} Parent for form
          * @param {DOM Node} Parent for table
@@ -213,11 +226,12 @@ var lifedom = (function lifedom(life) {
          * turned back on
          */
         syncLifeToDom: function() {
-            var currentOn = life.getCurrentOn(), d;
+            var currentOn = life.getCurrentOn(),
+                _this = this, d;
 
             // Turn everything off
             for (var i=enabledCells.length-1;i>-1;i--) {
-                d = document.getElementById(enabledCells[i]);
+                d = this.getNode(enabledCells[i]);
                 if (d) d.style.backgroundColor = '';
             }
             enabledCells = [];
@@ -226,7 +240,7 @@ var lifedom = (function lifedom(life) {
             _.each(currentOn, function(yAxes, key) {
                 xAxis = parseInt(key.substr(1));
                 _.each(yAxes, function(yAxis) {
-                    d = document.getElementById(xAxis+'x'+yAxis);
+                    d = _this.getNode(xAxis+'x'+yAxis);
                     if (d) { d.style.backgroundColor = ENABLED_COLOR; }
                     enabledCells.push(xAxis+'x'+yAxis);
                 });
