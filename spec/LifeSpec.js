@@ -28,7 +28,7 @@ describe('Life class', function() {
               { x: 3, y: 3 },
               { x: 3, y: 2 }
           ]});
-          expect(life.getCurrentOn()['x3'].length).toBe(3);
+          expect(life.getCurrentOn()['3'].length).toBe(3);
         });
     });
 
@@ -39,7 +39,7 @@ describe('Life class', function() {
 
         it('should group by X', function() {
             var results = life.groupByX([{ x: 3, y: 4 }]);
-            expect(results.x3).toContain(4);
+            expect(results['3']).toContain(4);
         });
     });
 
@@ -102,6 +102,29 @@ describe('Life class', function() {
 
     });
 
+    describe('doTurn', function() {
+        beforeEach(function() {
+            life.init(defaultInitArgs);
+        });
+
+        it('should be defined', function() {
+            expect(typeof life.doTurn).toBe('function');
+        });
+
+        it('should update currentOn', function() {
+            life.doTurn();
+            expect(life.getCurrentOn()['3'].length).toBe(1);
+            expect(life.getCurrentOn()['2'][0]).toBe(3);
+            expect(life.getCurrentOn()['3'][0]).toBe(3);
+            expect(life.getCurrentOn()['4'][0]).toBe(3);
+        });
+
+        it('should update priorOn', function() {
+            life.doTurn();
+            expect(life.getPriorOn()['3'].length).toBe(3);
+        });
+    });
+
     describe('getNewEnabled', function() {
         beforeEach(function() {
             life.init(defaultInitArgs);
@@ -114,9 +137,10 @@ describe('Life class', function() {
         it('should return only the new enabled plots', function() {
             life.doTurn();
             life.doTurn();
-            expect(life.getNewEnabled()['x3'].length).toBe(2);
-            expect(life.getNewEnabled()['x3'][0]).toBe(2);
-            expect(life.getNewEnabled()['x3'][1]).toBe(4);
+            life.getNewEnabled();
+            expect(life.getNewEnabled()['3'].length).toBe(2);
+            expect(life.getNewEnabled()['3'][0]).toBe(2);
+            expect(life.getNewEnabled()['3'][1]).toBe(4);
         });
 
     });
@@ -133,35 +157,12 @@ describe('Life class', function() {
         it('should return only the new enabled plots', function() {
             life.doTurn();
             life.doTurn();
-            expect(life.getNewDisabled()['x2'].length).toBe(1);
-            expect(life.getNewDisabled()['x4'].length).toBe(1);
-            expect(life.getNewDisabled()['x2'][0]).toBe(3);
-            expect(life.getNewDisabled()['x4'][0]).toBe(3);
+            expect(life.getNewDisabled()['2'].length).toBe(1);
+            expect(life.getNewDisabled()['4'].length).toBe(1);
+            expect(life.getNewDisabled()['2'][0]).toBe(3);
+            expect(life.getNewDisabled()['4'][0]).toBe(3);
         });
 
-    });
-
-    describe('doTurn', function() {
-        beforeEach(function() {
-            life.init(defaultInitArgs);
-        });
-
-        it('should be defined', function() {
-            expect(typeof life.doTurn).toBe('function');
-        });
-
-        it('should update currentOn', function() {
-            life.doTurn();
-            expect(life.getCurrentOn()['x3'].length).toBe(1);
-            expect(life.getCurrentOn()['x2'][0]).toBe(3);
-            expect(life.getCurrentOn()['x3'][0]).toBe(3);
-            expect(life.getCurrentOn()['x4'][0]).toBe(3);
-        });
-
-        it('should update priorOn', function() {
-            life.doTurn();
-            expect(life.getPriorOn()['x3'].length).toBe(3);
-        });
     });
 
 });

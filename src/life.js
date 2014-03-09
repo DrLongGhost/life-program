@@ -77,14 +77,14 @@ var life = (function life() {
                 Ys = [ plotObj.y - 1, plotObj.y, plotObj.y + 1 ];
 
             _.each(Xs, function(xAxis) {
-                if (currentOn['x'+xAxis]) {
-                    if (_.indexOf(currentOn['x'+xAxis], Ys[0])!==-1) count++;
+                if (currentOn[xAxis]) {
+                    if (_.indexOf(currentOn[xAxis], Ys[0])!==-1) count++;
                     if ( xAxis !== Xs[1] &&
-                        _.indexOf(currentOn['x'+xAxis], Ys[1])!==-1
+                        _.indexOf(currentOn[xAxis], Ys[1])!==-1
                         ) {
                             count++;
                         }
-                    if (_.indexOf(currentOn['x'+xAxis], Ys[2])!==-1) count++;
+                    if (_.indexOf(currentOn[xAxis], Ys[2])!==-1) count++;
                 }
             });
 
@@ -128,9 +128,10 @@ var life = (function life() {
             var plots = [],
                 xAxis;
 
-            _.each(currentOn, function(yAxes, key) {
-                xAxis = parseInt(key.substr(1));
+            _.each(currentOn, function(yAxes, xAxis) {
+                xAxis = parseInt(xAxis, 10);
                 _.each(yAxes, function(yAxis) {
+                    yAxis = parseInt(yAxis, 10);
                     // Mucho copy-pasteo
                     plots.push({x: xAxis-1, y: yAxis-1});
                     plots.push({x: xAxis, y: yAxis-1});
@@ -154,14 +155,15 @@ var life = (function life() {
          * speed up lookups.
          */
         groupByX: function(plots) {
-            var i, key, obj = {};
+            var i, key, obj = {}, y;
 
             for (i=0; i<plots.length; i++) {
-                key = 'x'+plots[i].x;
+                key = parseInt(plots[i].x, 10);
+                y = parseInt(plots[i].y, 10);
                 if (obj[key]) {
-                    obj[key].push(plots[i].y);
+                    obj[key].push(y);
                 } else {
-                    obj[key] = [ plots[i].y ];
+                    obj[key] = [ y ];
                 }
             }
             return obj;
@@ -192,8 +194,8 @@ var life = (function life() {
          * @return {Boolean}
          */
         isOn: function(point) {
-            return (currentOn['x'+point.x] &&
-                    currentOn['x'+point.x].indexOf(point.y)!==-1) ?
+            return (currentOn[point.x] &&
+                    currentOn[point.x].indexOf(point.y)!==-1) ?
                    true: false;
         }
     };

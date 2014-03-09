@@ -231,8 +231,7 @@ var lifedom = (function lifedom(life) {
                 _this = this, d;
 
             // Turn disabled cells off
-            _.each(newDisabled, function(yAxes, key) {
-                xAxis = parseInt(key.substr(1));
+            _.each(newDisabled, function(yAxes, xAxis) {
                 _.each(yAxes, function(yAxis) {
                     d = _this.getNode(xAxis+'x'+yAxis);
                     if (d) { d.style.backgroundColor = ''; }
@@ -240,8 +239,7 @@ var lifedom = (function lifedom(life) {
             });
 
             // Turn enabled cells on
-            _.each(newEnabled, function(yAxes, key) {
-                xAxis = parseInt(key.substr(1));
+            _.each(newEnabled, function(yAxes, xAxis) {
                 _.each(yAxes, function(yAxis) {
                     d = _this.getNode(xAxis+'x'+yAxis);
                     if (d) { d.style.backgroundColor = ENABLED_COLOR; }
