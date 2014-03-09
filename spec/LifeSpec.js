@@ -28,7 +28,9 @@ describe('Life class', function() {
               { x: 3, y: 3 },
               { x: 3, y: 2 }
           ]});
-          expect(life.getCurrentOn()['3'].length).toBe(3);
+          expect(life.getCurrentOn()['3']['2']).toBe(1);
+          expect(life.getCurrentOn()['3']['3']).toBe(1);
+          expect(life.getCurrentOn()['3']['4']).toBe(1);
         });
     });
 
@@ -39,7 +41,7 @@ describe('Life class', function() {
 
         it('should group by X', function() {
             var results = life.groupByX([{ x: 3, y: 4 }]);
-            expect(results['3']).toContain(4);
+            expect(results['3']['4']).toBe(1);
         });
     });
 
@@ -113,15 +115,16 @@ describe('Life class', function() {
 
         it('should update currentOn', function() {
             life.doTurn();
-            expect(life.getCurrentOn()['3'].length).toBe(1);
-            expect(life.getCurrentOn()['2'][0]).toBe(3);
-            expect(life.getCurrentOn()['3'][0]).toBe(3);
-            expect(life.getCurrentOn()['4'][0]).toBe(3);
+            expect(life.getCurrentOn()['2']['3']).toBe(1);
+            expect(life.getCurrentOn()['3']['3']).toBe(1);
+            expect(life.getCurrentOn()['4']['3']).toBe(1);
         });
 
         it('should update priorOn', function() {
             life.doTurn();
-            expect(life.getPriorOn()['3'].length).toBe(3);
+            expect(life.getPriorOn()['3']['2']).toBe(1);
+            expect(life.getPriorOn()['3']['3']).toBe(1);
+            expect(life.getPriorOn()['3']['4']).toBe(1);
         });
     });
 
@@ -137,10 +140,9 @@ describe('Life class', function() {
         it('should return only the new enabled plots', function() {
             life.doTurn();
             life.doTurn();
-            life.getNewEnabled();
             expect(life.getNewEnabled()['3'].length).toBe(2);
-            expect(life.getNewEnabled()['3'][0]).toBe(2);
-            expect(life.getNewEnabled()['3'][1]).toBe(4);
+            expect(life.getNewEnabled()['3'][0]).toBe('2');
+            expect(life.getNewEnabled()['3'][1]).toBe('4');
         });
 
     });
@@ -159,8 +161,8 @@ describe('Life class', function() {
             life.doTurn();
             expect(life.getNewDisabled()['2'].length).toBe(1);
             expect(life.getNewDisabled()['4'].length).toBe(1);
-            expect(life.getNewDisabled()['2'][0]).toBe(3);
-            expect(life.getNewDisabled()['4'][0]).toBe(3);
+            expect(life.getNewDisabled()['2'][0]).toBe('3');
+            expect(life.getNewDisabled()['4'][0]).toBe('3');
         });
 
     });

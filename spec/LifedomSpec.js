@@ -76,9 +76,9 @@ describe('Lifedom class', function() {
         });
 
         it('should set currentOn', function() {
-            expect(life.getCurrentOn()['1'][0]).toBe(1);
-            expect(life.getCurrentOn()['2'][0]).toBe(2);
-            expect(life.getCurrentOn()['3'][0]).toBe(3);
+            expect(life.getCurrentOn()['1'][1]).toBe(1);
+            expect(life.getCurrentOn()['2'][2]).toBe(1);
+            expect(life.getCurrentOn()['3'][3]).toBe(1);
         });
     });
 

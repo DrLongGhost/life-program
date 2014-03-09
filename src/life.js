@@ -31,8 +31,8 @@ var life = (function life() {
             var newEnabled = {};
 
             _.each(currentOn, function(yAxes, key) {
-                _.each(yAxes, function(yAxis) {
-                    if (priorOn[key] && priorOn[key].indexOf(yAxis)!==-1) {
+                _.each(yAxes, function(placeholder, yAxis) {
+                    if (priorOn[key] && priorOn[key][yAxis] === 1) {
                         return;
                     } else {
                         if (!newEnabled[key]) newEnabled[key] = [];
@@ -52,8 +52,8 @@ var life = (function life() {
             var newDisabled = {};
 
             _.each(priorOn, function(yAxes, key) {
-                _.each(yAxes, function(yAxis) {
-                    if (currentOn[key] && currentOn[key].indexOf(yAxis)!==-1) {
+                _.each(yAxes, function(placeholder, yAxis) {
+                    if (currentOn[key] && currentOn[key][yAxis] === 1) {
                         return;
                     } else {
                         if (!newDisabled[key]) newDisabled[key] = [];
@@ -78,13 +78,13 @@ var life = (function life() {
 
             _.each(Xs, function(xAxis) {
                 if (currentOn[xAxis]) {
-                    if (_.indexOf(currentOn[xAxis], Ys[0])!==-1) count++;
+                    if (currentOn[xAxis][ Ys[0] ] === 1) count++;
                     if ( xAxis !== Xs[1] &&
-                        _.indexOf(currentOn[xAxis], Ys[1])!==-1
+                        currentOn[xAxis][ Ys[1] ] === 1
                         ) {
                             count++;
                         }
-                    if (_.indexOf(currentOn[xAxis], Ys[2])!==-1) count++;
+                    if (currentOn[xAxis][ Ys[2] ] === 1) count++;
                 }
             });
 
@@ -130,7 +130,7 @@ var life = (function life() {
 
             _.each(currentOn, function(yAxes, xAxis) {
                 xAxis = parseInt(xAxis, 10);
-                _.each(yAxes, function(yAxis) {
+                _.each(yAxes, function(placeholder, yAxis) {
                     yAxis = parseInt(yAxis, 10);
                     // Mucho copy-pasteo
                     plots.push({x: xAxis-1, y: yAxis-1});
@@ -151,20 +151,15 @@ var life = (function life() {
         /**
          * Converts an array of individual plots into an object indexed
          * by X-Axis. This is done for optimization purposes
-         * TODO: Future optimization would keep inner arrays sorted to
-         * speed up lookups.
          */
         groupByX: function(plots) {
             var i, key, obj = {}, y;
 
-            for (i=0; i<plots.length; i++) {
+            for (i=plots.length-1; i>-1; i--) {
                 key = parseInt(plots[i].x, 10);
                 y = parseInt(plots[i].y, 10);
-                if (obj[key]) {
-                    obj[key].push(y);
-                } else {
-                    obj[key] = [ y ];
-                }
+                if (!obj[key]) obj[key] = {};
+                obj[key][y] = 1;
             }
             return obj;
         },
@@ -195,7 +190,7 @@ var life = (function life() {
          */
         isOn: function(point) {
             return (currentOn[point.x] &&
-                    currentOn[point.x].indexOf(point.y)!==-1) ?
+                    currentOn[point.x][point.y] === 1) ?
                    true: false;
         }
     };
