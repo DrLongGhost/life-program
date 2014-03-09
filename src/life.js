@@ -24,6 +24,48 @@ var life = (function life() {
         },
 
         /**
+         * Returns only items present in currentOn that are missing
+         * from priorOn. These are items newly enabled.
+         */
+        getNewEnabled: function() {
+            var newEnabled = {};
+
+            _.each(currentOn, function(yAxes, key) {
+                _.each(yAxes, function(yAxis) {
+                    if (priorOn[key] && priorOn[key].indexOf(yAxis)!==-1) {
+                        return;
+                    } else {
+                        if (!newEnabled[key]) newEnabled[key] = [];
+                        newEnabled[key].push(yAxis);
+                    }
+                });
+            });
+
+            return newEnabled;
+        },
+
+        /**
+         * Returns only items present in priorOn that are missing
+         * from currentOn. These are items newly disabled.
+         */
+        getNewDisabled: function() {
+            var newDisabled = {};
+
+            _.each(priorOn, function(yAxes, key) {
+                _.each(yAxes, function(yAxis) {
+                    if (currentOn[key] && currentOn[key].indexOf(yAxis)!==-1) {
+                        return;
+                    } else {
+                        if (!newDisabled[key]) newDisabled[key] = [];
+                        newDisabled[key].push(yAxis);
+                    }
+                });
+            });
+
+            return newDisabled;
+        },
+
+        /**
          * Counts the number of adjacent cells that are enabled,
          * comparing the passed plot points against currentOn.
          * @arg {Object} plotObj Defined as follows: {x:2, y:44}

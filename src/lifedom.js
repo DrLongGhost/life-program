@@ -168,7 +168,7 @@ var lifedom = (function lifedom(life) {
                 playVal,
                 speed = $form.find('#speed').val();
 
-            if (!subsequentCall) {
+            if (!subsequentCall) { // initial call of play()
                 playVal = ($play.val() === 'Play') ? 'Stop' : 'Play';
                 $play.val(playVal);
 
@@ -176,9 +176,9 @@ var lifedom = (function lifedom(life) {
                     window.clearTimeout(this.playing);
                     return true;
                 }
-            }
 
-            this.syncDomToLife();
+                this.syncDomToLife();
+            }
 
             this.playing = window.setTimeout(function() {
                 life.doTurn();
@@ -226,23 +226,25 @@ var lifedom = (function lifedom(life) {
          * turned back on
          */
         syncLifeToDom: function() {
-            var currentOn = life.getCurrentOn(),
+            var newEnabled = life.getNewEnabled(),
+                newDisabled = life.getNewDisabled(),
                 _this = this, d;
 
-            // Turn everything off
-            for (var i=enabledCells.length-1;i>-1;i--) {
-                d = this.getNode(enabledCells[i]);
-                if (d) d.style.backgroundColor = '';
-            }
-            enabledCells = [];
+            // Turn disabled cells off
+            _.each(newDisabled, function(yAxes, key) {
+                xAxis = parseInt(key.substr(1));
+                _.each(yAxes, function(yAxis) {
+                    d = _this.getNode(xAxis+'x'+yAxis);
+                    if (d) { d.style.backgroundColor = ''; }
+                });
+            });
 
             // Turn enabled cells on
-            _.each(currentOn, function(yAxes, key) {
+            _.each(newEnabled, function(yAxes, key) {
                 xAxis = parseInt(key.substr(1));
                 _.each(yAxes, function(yAxis) {
                     d = _this.getNode(xAxis+'x'+yAxis);
                     if (d) { d.style.backgroundColor = ENABLED_COLOR; }
-                    enabledCells.push(xAxis+'x'+yAxis);
                 });
             });
         }

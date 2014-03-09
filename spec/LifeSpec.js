@@ -102,6 +102,45 @@ describe('Life class', function() {
 
     });
 
+    describe('getNewEnabled', function() {
+        beforeEach(function() {
+            life.init(defaultInitArgs);
+        });
+
+        it('should be defined', function() {
+            expect(typeof life.getNewEnabled).toBe('function');
+        });
+
+        it('should return only the new enabled plots', function() {
+            life.doTurn();
+            life.doTurn();
+            expect(life.getNewEnabled()['x3'].length).toBe(2);
+            expect(life.getNewEnabled()['x3'][0]).toBe(2);
+            expect(life.getNewEnabled()['x3'][1]).toBe(4);
+        });
+
+    });
+
+    describe('getNewDisabled', function() {
+        beforeEach(function() {
+            life.init(defaultInitArgs);
+        });
+
+        it('should be defined', function() {
+            expect(typeof life.getNewDisabled).toBe('function');
+        });
+
+        it('should return only the new enabled plots', function() {
+            life.doTurn();
+            life.doTurn();
+            expect(life.getNewDisabled()['x2'].length).toBe(1);
+            expect(life.getNewDisabled()['x4'].length).toBe(1);
+            expect(life.getNewDisabled()['x2'][0]).toBe(3);
+            expect(life.getNewDisabled()['x4'][0]).toBe(3);
+        });
+
+    });
+
     describe('doTurn', function() {
         beforeEach(function() {
             life.init(defaultInitArgs);
