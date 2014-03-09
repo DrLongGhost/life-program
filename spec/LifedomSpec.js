@@ -116,4 +116,22 @@ describe('Lifedom class', function() {
         });
     });
 
+    describe('updateEnabledCellsFromCurrentOn', function() {
+
+        it('should be defined', function() {
+            expect(typeof lifedom.updateEnabledCellsFromCurrentOn).toBe('function');
+        });
+
+        it('should update enabledCells', function() {
+            life.init({board: {x: 5, y: 5 },
+                          on: [
+                              {x: 3, y: 4},
+                              {x: 3, y: 3},
+                              {x: 3, y: 2}
+                          ] });
+            var enabledCells = lifedom.updateEnabledCellsFromCurrentOn();
+            expect(enabledCells[0]).toBe('3x2');
+        });
+    });
+
 });

@@ -173,6 +173,8 @@ var lifedom = (function lifedom(life) {
                 $play.val(playVal);
 
                 if (playVal === 'Play') {
+                    // STOP
+                    this.updateEnabledCellsFromCurrentOn();
                     window.clearTimeout(this.playing);
                     return true;
                 }
@@ -245,6 +247,22 @@ var lifedom = (function lifedom(life) {
                     if (d) { d.style.backgroundColor = ENABLED_COLOR; }
                 });
             });
+        },
+
+        /**
+         * Updates the enabledCells array with the contents of currentOn
+         * @return {Array} Returns currentOn for ease of unit testing
+         */
+        updateEnabledCellsFromCurrentOn: function() {
+            var currentOn = life.getCurrentOn();
+            enabledCells = [];
+
+            _.each(currentOn, function(yAxes, xAxis) {
+                _.each(yAxes, function(placeholder, yAxis) {
+                    enabledCells.push(xAxis + 'x' + yAxis);
+                });
+            });
+            return enabledCells;
         }
     };
 })(life);
