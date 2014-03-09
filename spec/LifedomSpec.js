@@ -109,9 +109,9 @@ describe('Lifedom class', function() {
 
         it('should set the correct classes', function() {
             expect($div2.find('#3x4').css('backgroundColor')).toBe('rgb(0, 204, 0)');
-            expect($div2.find('#2x3').css('backgroundColor')).toBe('');
+            expect($div2.find('#2x3').css('backgroundColor')).not.toBe('rgb(0, 204, 0)');
             expect($div2.find('#3x3').css('backgroundColor')).toBe('rgb(0, 204, 0)');
-            expect($div2.find('#4x3').css('backgroundColor')).toBe('');
+            expect($div2.find('#4x3').css('backgroundColor')).not.toBe('rgb(0, 204, 0)');
             expect($div2.find('#3x2').css('backgroundColor')).toBe('rgb(0, 204, 0)');
         });
     });
