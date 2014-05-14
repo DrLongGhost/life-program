@@ -26,6 +26,8 @@ var lifedom = (function lifedom(life) {
          */
         applySettings: function() {
             // zero out the model
+            life.init({on:[]});
+            nodes = {};
             $table.html();
             enabledCells = [];
             this.buildTable($table, true);

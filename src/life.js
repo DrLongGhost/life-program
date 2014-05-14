@@ -179,7 +179,10 @@ var life = (function life() {
         init: function(args) {
             if (args.board && args.board.x) maxX = args.board.x;
             if (args.board && args.board.y) maxY = args.board.y;
-            if (args.on && typeof args.on !== 'undefined') currentOn = this.groupByX(args.on);
+            if (args.on && typeof args.on !== 'undefined') {
+                priorOn = {};
+                currentOn = this.groupByX(args.on);
+            }
         },
 
         /**
