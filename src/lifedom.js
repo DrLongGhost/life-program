@@ -17,7 +17,14 @@ var lifedom = (function lifedom(life) {
         ENABLED_COLOR = '#00CC00',
 
         // Cache dom nodes
-        nodes = {};
+        nodes = {},
+        cvsNode, cvs,
+        cSize = 10, // small
+        cWidth, cHeight,
+
+        // Animation Style
+        useCanvas = false;
+        useDom = true;
 
     return {
 
@@ -31,6 +38,29 @@ var lifedom = (function lifedom(life) {
             $table.html();
             enabledCells = [];
             this.buildTable($table, true);
+            this.buildCanvas();
+        },
+
+        buildCanvas: function() {
+            var colCount = parseInt($('#colCount').val(), 10) || 5,
+                rowCount = parseInt($('#rowCount').val(), 10) || 5;
+
+            /*
+            if ($('#medium').is(':checked')) {
+                cSize = 20;
+            } else if ($('#large').is(':checked')) {
+                cSize = 40;
+            }
+            */
+
+            cvsNode = document.getElementById('cvs');
+
+            cWidth = (cSize * colCount);
+            cHeight = (cSize * rowCount);
+            cvsNode.setAttribute('width', cWidth + 'px');
+            cvsNode.setAttribute('height', cHeight + 'px');
+            cvs = cvsNode.getContext('2d');
+            cvs.fillStyle = 'rgb(0,204,0)';
         },
 
         /**
@@ -63,7 +93,7 @@ var lifedom = (function lifedom(life) {
              form += '<br/><hr><br/>';
 
              form += '<label for="turnCount">Turn: </label>';
-             form += '<strong id="turnCount">1</strong>';
+             form += '<strong id="turnCount">1</strong>&nbsp;&nbsp;&nbsp;';
 
              form += '<label for="speed">Speed (lower to speed up): </label>';
              form += '<input type="range" id="speed" min="1" max="1000" value="50">';
@@ -74,6 +104,9 @@ var lifedom = (function lifedom(life) {
 
              form += '<label for="tps">Performance: </label>';
              form += '<strong id="tps">0</strong> turns per second';
+
+             form += '<br/><br/><label for="useCanvas">Use canvas animation </label>';
+             form += '<input type="checkbox" value="1" id="useCanvas" />';
 
              form += '</div>';
 
@@ -92,6 +125,7 @@ var lifedom = (function lifedom(life) {
              });
              $form.on('click', '#small, #medium, #large', function(radio) {
                  $table.find('table').get(0).className = $(this).val();
+                 window.setTimeout(_this.buildCanvas, 0);
              });
              $form.on('click', '#turnCount', this.resetTurnCount);
 
@@ -141,6 +175,21 @@ var lifedom = (function lifedom(life) {
         },
 
         /**
+         * General purpose logic for drawing a square
+         * @param {Int} xAxis
+         * @param {Int} yAxis
+         * @param {String} Either "on" or "off"
+         */
+        drawCanvasSquare: function(xAxis, yAxis, mode) {
+            var method = (mode === 'on') ? 'fillRect' : 'clearRect',
+                x, y;
+
+            x = (xAxis * cSize) - cSize;
+            y = ((yAxis - ($form.find('#rowCount').val() * 1)) * -1) * cSize;
+            cvs[method](x, y, cSize, cSize);
+        },
+
+        /**
          * Provides a cache around getElementById
          */
         getNode: function(id) {
@@ -158,6 +207,7 @@ var lifedom = (function lifedom(life) {
         init: function(formParent, tableParent) {
             this.buildForm($(formParent));
             this.buildTable($(tableParent));
+            this.buildCanvas();
         },
 
         /**
@@ -176,9 +226,30 @@ var lifedom = (function lifedom(life) {
 
                 if (playVal === 'Play') {
                     // STOP
+                    $('#tableParent').show();
+                    $(cvsNode).hide();
                     this.updateEnabledCellsFromCurrentOn();
                     window.clearTimeout(this.playing);
+                    this.syncLifeToDom(true);
                     return true;
+                } else {
+                    // PLAY
+                    if ($('#useCanvas').is(':checked')) {
+                        useCanvas = true;
+                        useDom = false;
+
+                        // Draw the currently enabled cells right quick
+                        for (var i=enabledCells.length-1; i>-1; i--) {
+                            plots = enabledCells[i].split('x');
+                            _this.drawCanvasSquare(parseInt(plots[0]), parseInt(plots[1]), 'on');
+                        }
+
+                        $(cvsNode).show();
+                        $('#tableParent').hide();
+                    } else {
+                        useDom = true;
+                        useCanvas = false;
+                    }
                 }
 
                 this.syncDomToLife();
@@ -192,7 +263,7 @@ var lifedom = (function lifedom(life) {
                 // Post turn actions
                 $turnCount.html(++turnCount);
                 if (turnCount==150) {
-                    alert($tps.html() + 'tps at turn 150');
+                    console.log($tps.html() + 'tps at turn 150');
                 }
 
             }, speed);
@@ -228,8 +299,21 @@ var lifedom = (function lifedom(life) {
          * Updates the table to reflect the current data in the life class
          * TODO: Optimize this function by not disabling cells which will be
          * turned back on
+         * @param {Boolean} Pass true to do a full refresh of the Dom
          */
-        syncLifeToDom: function() {
+        syncLifeToDom: function(fullRefresh) {
+            if (fullRefresh === true) {
+                // Turn everything that's on, off
+                $table.find('td').css('backgroundColor', '');
+
+                // Draw the currently enabled cells
+                for (var i=enabledCells.length-1; i>-1; i--) {
+                    var node = this.getNode(enabledCells[i]);
+                    if (node) node.style.backgroundColor = ENABLED_COLOR;
+                }
+                return true;
+            }
+
             var newEnabled = life.getNewEnabled(),
                 newDisabled = life.getNewDisabled(),
                 _this = this, d;
@@ -237,16 +321,27 @@ var lifedom = (function lifedom(life) {
             // Turn disabled cells off
             _.each(newDisabled, function(yAxes, xAxis) {
                 _.each(yAxes, function(yAxis) {
-                    d = _this.getNode(xAxis+'x'+yAxis);
-                    if (d) { d.style.backgroundColor = ''; }
+                    if (useDom) {
+                        d = _this.getNode(xAxis+'x'+yAxis);
+                        if (d) { d.style.backgroundColor = ''; }
+                    } else {
+                        // canvas
+                        _this.drawCanvasSquare(xAxis, yAxis, 'off');
+                    }
+
                 });
             });
 
             // Turn enabled cells on
             _.each(newEnabled, function(yAxes, xAxis) {
                 _.each(yAxes, function(yAxis) {
-                    d = _this.getNode(xAxis+'x'+yAxis);
-                    if (d) { d.style.backgroundColor = ENABLED_COLOR; }
+                    if (useDom) {
+                        d = _this.getNode(xAxis+'x'+yAxis);
+                        if (d) { d.style.backgroundColor = ENABLED_COLOR; }
+                    } else {
+                        // canvas
+                        _this.drawCanvasSquare(xAxis, yAxis, 'on');
+                    }
                 });
             });
         },

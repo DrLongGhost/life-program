@@ -11,6 +11,8 @@
   	  table.medium td {height: 20px; width: 20px; }
   	  table.large td {height: 40px; width: 40px; }
   	  table td {border: 1px solid black; cursor: pointer;}
+  	  table td.on {background-color: #333;}
+  	  table td.on {background-color: #00CC00;}
 
   	  #formParent { margin-top: 20px; }
   	  #formParent input[type="number"],
@@ -52,11 +54,15 @@
 				0px 1px 0px rgba(255,255,255,0.2);
   	  }
   	  #formParent input { font-size: 12pt; }
-  	  #turnCount {margin-right: 25px; cursor:pointer;}
+
+  	  #cvs {
+  	  	  border: 1px solid black;
+  	  }
   </style>
 <body>
 	<h1>Conway's Life</h1>
 
+	<div id="canvasParent"><canvas id="cvs" height="200" width="200" style="display:none;"></canvas></div>
 	<div id="tableParent"></div>
 	<small>Click a preset then click play.<br/>You can also click the board to select cells.</small>
 	<div id="formParent"></div>
